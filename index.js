@@ -8,7 +8,7 @@ var validator = require('express-validator');
 
 // import controller
 var AuthController = require('./controllers/AuthController');
-
+var Controller = require('./controllers/Controller');
 // import Router file
 var pageRouter = require('./routers/route');
 
@@ -54,7 +54,7 @@ app.use(expressLayouts);
 
 // Define All Route 
 pageRouter(app);
-
+Controller(app);
 app.get('/', function (req, res) {
   res.redirect('/');
 });

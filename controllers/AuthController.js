@@ -139,7 +139,6 @@ module.exports = function (app) {
 		})
 	});
 
-
 	app.get('/login', function (req, res) {
 		res.render('Auth/auth-login', { 'message': req.flash('message'), 'error': req.flash('error') });
 	});
@@ -157,6 +156,12 @@ module.exports = function (app) {
 						res.redirect('/login');
 					}
 					if(result){
+						let tempUser = { username: utente.nome, email: utente.email };
+						users.push(tempUser);
+
+						// Assign value in session
+						sess = req.session;
+						sess.user = tempUser;
 						req.flash('message', 'Utente loggato!');
 						res.redirect('/');
 					}else{
@@ -263,6 +268,22 @@ module.exports = function (app) {
 
 		res.redirect('/login');
 	});
+
+	// Clienti
+	app.get('/lista-clienti', function (req, res) {
+		Utente.find()
+		.then(utente => {
+			if(utente){
+				res.locals = { title: 'Clienti' };
+				res.render('Clienti/lista-clienti');
+			}else{
+				req.flash('message', 'Utenti non trovati!');
+				res.redirect('/login');
+
+			}
+		})
+		
+  });
 
 
 };

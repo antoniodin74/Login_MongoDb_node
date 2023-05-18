@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var urlencodeParser = bodyParser.urlencoded({ extended: false });
 var validator = require('express-validator');
+const Utente = require('../models/Utente');
 
 module.exports = function (app) {
 
@@ -15,7 +16,7 @@ module.exports = function (app) {
 
       app.get('/', isUserAllowed, function (req, res) {
             res.locals = { title: 'Dashboard' };
-            res.render('Dashboard/index');
+            res.render('Dashboard/index', {'user': sess.user.username});
       });
 
       app.get('/dashboard-2', isUserAllowed, function (req, res) {
@@ -100,7 +101,6 @@ module.exports = function (app) {
             res.locals = { title: 'Chat' };
             res.render('Chat/chat');
       });
-
       // Ecomerce
       app.get('/ecommerce-products', isUserAllowed, function (req, res) {
             res.locals = { title: 'Products' };
