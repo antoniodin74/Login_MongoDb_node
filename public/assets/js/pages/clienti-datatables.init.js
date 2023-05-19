@@ -11,6 +11,15 @@ File: Ecommerce datatables Js File
 $(document).ready(function() {
     $('.datatable').DataTable();
     $(".dataTables_length select").addClass('form-select form-select-sm');
+
+    // Ottenere il riferimento al pulsante "aggiunG"
+    var button = document.getElementById('aggiungiC');
+
+    // Aggiungere un gestore di eventi click al pulsante
+    button.addEventListener('click', function() {
+      // Eseguire il redirect alla route /lista-clienti
+      window.location.href = '/inserisci-cliente';
+    });
 });
 /*
 $(document).ready(function() {

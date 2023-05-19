@@ -269,21 +269,4 @@ module.exports = function (app) {
 		res.redirect('/login');
 	});
 
-	// Clienti
-	app.get('/lista-clienti', function (req, res) {
-		Utente.find()
-		.then(utente => {
-			if(utente){
-				res.locals = { title: 'Clienti' };
-				res.render('Clienti/lista-clienti');
-			}else{
-				req.flash('message', 'Utenti non trovati!');
-				res.redirect('/login');
-
-			}
-		})
-		
-  });
-
-
 };

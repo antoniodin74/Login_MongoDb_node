@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var urlencodeParser = bodyParser.urlencoded({ extended: false });
 var validator = require('express-validator');
 const Utente = require('../models/Utente');
+const Controller = require('../controllers/Controller');
 
 module.exports = function (app) {
 
@@ -383,5 +384,11 @@ module.exports = function (app) {
             res.locals = { title: 'Leaflet' };
             res.render('Maps/maps-leaflet');
       });
-      
+
+      // Cliente
+      app.get('/inserisci-cliente', isUserAllowed, function (req, res) {
+            res.locals = { title: 'Inserisci Cliente' };
+            res.render('Clienti/inserisci-cliente');
+      });
+
 }
