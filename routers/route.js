@@ -3,7 +3,10 @@ var bodyParser = require('body-parser');
 var urlencodeParser = bodyParser.urlencoded({ extended: false });
 var validator = require('express-validator');
 const Utente = require('../models/Utente');
-const Controller = require('../controllers/Controller');
+const controller = require('../controllers/Controller');
+const multer = require('multer');
+const upload = multer({ dest: 'upload/' }); 
+
 
 module.exports = function (app) {
 
@@ -390,5 +393,27 @@ module.exports = function (app) {
             res.locals = { title: 'Inserisci Cliente' };
             res.render('Clienti/inserisci-cliente');
       });
-
+ 
+      app.get('/lista-clienti', isUserAllowed, async (req, res) => {
+            try {
+                  const utente = await controller.getClienti();
+                  if(utente){
+                        res.locals = { title: 'Clienti' };
+                        res.render('Clienti/lista-clienti', { 'message': req.flash('message'), 'error': req.flash('error'), 'Dati': utente });
+                  }else{
+                        req.flash('message', 'Utenti non trovati!');
+                        res.redirect('/login');
+                  }
+            } catch (error) {
+                  req.flash('message', 'Utenti non trovati!');
+                  res.redirect('/login');
+            }
+          });
+          app.post('/upload', upload.single('file'), (req, res) => {
+            const filePath = req.file.path; // Ottieni la path del file caricato
+          console.log(filePath);
+            // Effettua le operazioni necessarie con la path del file
+          
+            res.send({ filePath: filePath }); // Invia la path del file come risposta al client
+          });
 }
