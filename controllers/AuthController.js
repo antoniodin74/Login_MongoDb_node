@@ -15,6 +15,7 @@ var validator = require('express-validator');
 var axios = require("axios");
 var MockAdapter = require("axios-mock-adapter");
 
+
 // This sets the mock adapter on the default instance
 var mock = new MockAdapter(axios);
 
@@ -110,7 +111,7 @@ module.exports = function (app) {
 	});
 
 	app.post('/post-register', urlencodeParser, function (req, res) {
-		let tempUser = { username: req.body.email, email: req.body.email, password: req.body.password };
+		let tempUser = { username: req.body.email, email: req.body.email };
 		users.push(tempUser);
 
 		// Assign value in session
@@ -177,7 +178,7 @@ module.exports = function (app) {
 			}
 		})
 
-		let tempUser = { username: req.body.email, email: req.body.email, password: req.body.password };
+		let tempUser = { username: req.body.email, email: req.body.email };
 		users.push(tempUser);
 
 		// Assign value in session

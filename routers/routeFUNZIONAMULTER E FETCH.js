@@ -16,17 +16,7 @@ const storage = multer.diskStorage({
       }
     });
     
-    var upload = multer({
-      storage: storage,
-      fileFilter: (req, file, cb) => {
-            if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "text/plain"  || file.mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
-                  cb(null, true);
-            } else {
-                  cb(null, false);
-                  return cb(new Error('Ammesse solo estensioni .png, jpg'));
-            }
-            }
-      }).array('file');
+    const upload = multer({ storage: storage });
 
 module.exports = function (app) {
 
@@ -429,16 +419,8 @@ module.exports = function (app) {
                   res.redirect('/login');
             }
           });
-          app.post('/upload', (req, res) => {
-            upload(req, res, function (err){
-                  console.log(req.files);
-                  if (err instanceof multer.MulterError) {
-                        res.send(err)
-                  } else if (err) {
-                        res.send(err)
-                  }
-            })
-            
-            res.redirect('/lista-clienti');
+          app.post('/upload', upload.array('file'), (req, res) => {
+           console.log(req.files)
+            res.send("files received");
             });
 }
