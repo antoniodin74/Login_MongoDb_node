@@ -29,10 +29,6 @@ const utenteschema = new mongoose.Schema({
         type: String,
         required: true
     },
-    token: {
-        type: String,
-        default: ''
-    },
     note: {
         type: String,
         default: ''
@@ -40,6 +36,10 @@ const utenteschema = new mongoose.Schema({
     fotoPath: {
         type: String,
         default: ''
+    },
+    stato: {
+      type: Boolean,
+      default: true
     }
 })
 

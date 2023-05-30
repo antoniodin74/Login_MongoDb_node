@@ -134,23 +134,31 @@ module.exports = function (app) {
 	});
 
 	app.post('/post-register', urlencodeParser, function (req, res) {
-
-		
 			upload(req, res, function (err){
-
-				if (req.fieldHidden == "inserisciClienteAdministrator") {
-					let tempUser = { username: req.body.email, email: req.body.email };
-					users.push(tempUser);
-		
+				if (req.body.fieldHidden == "registraCliente") {
+					if (req.file !== undefined) {
+						var fotoPath = req.file.path;
+					} else {
+						var fotoPath = "";
+					} 
+					let tempUser = { username: req.body.nome, email: req.body.email, foto: fotoPath};
 					// Assign value in session
+					users.push(tempUser);
 					sess = req.session;
 					sess.user = tempUser;
-					}
-		
+				} else if (req.body.fieldHidden == "inserisciClienteAdministrator") {
+					if (req.file !== undefined) {
+						var fotoPath = req.file.path;
+					} else {
+						var fotoPath = "";
+					} 
+				}
+
 				bcrypt.hash(req.body.password, 10, function(err, hashedPass) {
 					if(err) {
 						console.log(err);
 					}
+					
 					let utente = new Utente ({
 						nome : req.body.nome,
 						cognome: req.body.cognome,
@@ -158,12 +166,17 @@ module.exports = function (app) {
 						email: req.body.email,
 						password: hashedPass,
 						note: req.body.note,
-						fotoPath: req.file.path
+						fotoPath: fotoPath,
+						stato: true
 					})
 					utente.save()
 					.then(utente => {
 						req.flash('message', 'Utente registrato!');
-						res.redirect('/');
+						if (req.body.fieldHidden == "registraCliente") {
+							res.redirect('/');
+						} else {
+							res.redirect('/lista-clienti');
+						}
 					})
 					.catch(error => {
 						req.flash('error', 'Utente non registrato!');

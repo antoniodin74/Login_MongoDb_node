@@ -26,7 +26,7 @@
 <!-- end page title -->
 
 <%- contentFor('body') %>
-<form method="post" action="/post-register" enctype="multipart/form-data">
+<form method="post" action="/post-register" enctype="multipart/form-data" id="formAggiungiUtente">
 
 <input type="hidden" name="fieldHidden" value="inserisciClienteAdministrator">
 <div class="row">
@@ -144,7 +144,7 @@
 
 <div class="row mb-4">
     <div class="col text-end">
-        <button type="submit" class="btn btn-danger"> <i class="uil uil-times me-1"></i> Cancella </button>
+        <button onclick="resetForm()" class="btn btn-danger"> <i class="uil uil-times me-1"></i> Cancella </button>
         <button type="submit" class="btn btn-success"> <i class="uil uil-file-alt me-1"></i> Salva </button>
     </div> <!-- end col -->
 </div> <!-- end row-->
@@ -152,6 +152,11 @@
 </form>
 <%- contentFor('FooterJs') %>
 
+<script>
+    function resetForm() {
+      document.getElementById("formAggiungiUtente").reset();
+    }
+    </script>
 <!-- select 2 plugin -->
 <script src="public/assets/libs/select2/js/select2.min.js"></script>
 
