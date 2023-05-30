@@ -38,7 +38,7 @@ app.use(i18n({
 }));
 
 app.use('/public', express.static('public'));
-
+app.use('/uploads', express.static('uploads'));
 app.get('/layouts/', function (req, res) {
   res.render('view');
 });

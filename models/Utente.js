@@ -32,6 +32,14 @@ const utenteschema = new mongoose.Schema({
     token: {
         type: String,
         default: ''
+    },
+    note: {
+        type: String,
+        default: ''
+    },
+    fotoPath: {
+        type: String,
+        default: ''
     }
 })
 

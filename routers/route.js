@@ -19,14 +19,14 @@ const storage = multer.diskStorage({
     var upload = multer({
       storage: storage,
       fileFilter: (req, file, cb) => {
-            if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "text/plain"  || file.mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+            if (file.mimetype == "image/png" || file.mimetype == "image/jpeg" || file.mimetype == "text/plain"  || file.mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
                   cb(null, true);
             } else {
                   cb(null, false);
                   return cb(new Error('Ammesse solo estensioni .png, jpg'));
             }
             }
-      }).array('file');
+      }).single('file');
 
 module.exports = function (app) {
 
@@ -431,7 +431,8 @@ module.exports = function (app) {
           });
           app.post('/upload', (req, res) => {
             upload(req, res, function (err){
-                  console.log(req.files);
+                  console.log(req.file);
+                  console.log(req.body);
                   if (err instanceof multer.MulterError) {
                         res.send(err)
                   } else if (err) {

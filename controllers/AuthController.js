@@ -15,6 +15,29 @@ var validator = require('express-validator');
 var axios = require("axios");
 var MockAdapter = require("axios-mock-adapter");
 
+const multer = require('multer');
+
+// Configurazione Multer per gestire l'upload dei file
+const storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+	  cb(null, 'uploads');
+	},
+	filename: function (req, file, cb) {
+	  cb(null, Date.now() + '-' + file.originalname);
+	}
+  });
+  
+  var upload = multer({
+	storage: storage,
+	fileFilter: (req, file, cb) => {
+		  if (file.mimetype == "image/png" || file.mimetype == "image/jpeg" || file.mimetype == "text/plain"  || file.mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+				cb(null, true);
+		  } else {
+				cb(null, false);
+				return cb(new Error('Ammesse solo estensioni .png, jpg'));
+		  }
+		  }
+	}).single('file');
 
 // This sets the mock adapter on the default instance
 var mock = new MockAdapter(axios);
@@ -111,33 +134,50 @@ module.exports = function (app) {
 	});
 
 	app.post('/post-register', urlencodeParser, function (req, res) {
-		let tempUser = { username: req.body.email, email: req.body.email };
-		users.push(tempUser);
 
-		// Assign value in session
-		sess = req.session;
-		sess.user = tempUser;
+		
+			upload(req, res, function (err){
 
-		bcrypt.hash(req.body.password, 10, function(err, hashedPass) {
-			if(err) {
-				console.log(err);
-			}
-			let utente = new Utente ({
-				nome : req.body.nome,
-				cognome: req.body.cognome,
-				piva: req.body.piva,
-				email: req.body.email,
-				password: hashedPass
-			})
-			utente.save()
-			.then(utente => {
-				req.flash('message', 'Utente registrato!');
-				res.redirect('/');
-			})
-			.catch(error => {
-				req.flash('error', 'Utente non registrato!');
-			})
-		})
+				if (req.fieldHidden == "inserisciClienteAdministrator") {
+					let tempUser = { username: req.body.email, email: req.body.email };
+					users.push(tempUser);
+		
+					// Assign value in session
+					sess = req.session;
+					sess.user = tempUser;
+					}
+		
+				bcrypt.hash(req.body.password, 10, function(err, hashedPass) {
+					if(err) {
+						console.log(err);
+					}
+					let utente = new Utente ({
+						nome : req.body.nome,
+						cognome: req.body.cognome,
+						piva: req.body.piva,
+						email: req.body.email,
+						password: hashedPass,
+						note: req.body.note,
+						fotoPath: req.file.path
+					})
+					utente.save()
+					.then(utente => {
+						req.flash('message', 'Utente registrato!');
+						res.redirect('/');
+					})
+					.catch(error => {
+						req.flash('error', 'Utente non registrato!');
+					})
+				})
+
+				if (err instanceof multer.MulterError) {
+					  res.send(err)
+				} else if (err) {
+					  res.send(err)
+				}
+		  })
+
+		  	
 	});
 	
 
@@ -158,7 +198,7 @@ module.exports = function (app) {
 						res.redirect('/login');
 					}
 					if(result){
-						let tempUser = { username: utente.nome, email: utente.email };
+						let tempUser = { username: utente.nome, email: utente.email, foto: utente.fotoPath };
 						users.push(tempUser);
 
 						// Assign value in session
