@@ -428,18 +428,57 @@ module.exports = function (app) {
                   req.flash('message', 'Utenti non trovati!');
                   res.redirect('/login');
             }
-          });
-          app.post('/upload', (req, res) => {
-            upload(req, res, function (err){
-                  console.log(req.file);
-                  console.log(req.body);
-                  if (err instanceof multer.MulterError) {
-                        res.send(err)
-                  } else if (err) {
-                        res.send(err)
+      });
+          
+      app.post('/upload', (req, res) => {
+      upload(req, res, function (err){
+            if (err instanceof multer.MulterError) {
+                  res.send(err)
+            } else if (err) {
+                  res.send(err)
+            }
+      })
+      
+      res.redirect('/lista-clienti');
+      });
+
+      app.get('/aggiorna-cliente', isUserAllowed, urlencodeParser, async (req, res) => {
+            const email = (req.query.email);
+            try {
+                  const utente = await controller.getCliente(email);
+                  if(utente){
+                        res.locals = { title: 'Modifica Cliente' };
+                        res.render('Clienti/aggiorna-cliente', { 'message': req.flash('message'), 'error': req.flash('error'), 'utente': utente });
+                  }else{
+                        req.flash('message', 'Utente non trovato!');
+                        res.redirect('/login');
                   }
-            })
-            
-            res.redirect('/lista-clienti');
-            });
+            } catch (error) {
+                  req.flash('message', 'Utente non trovato!');
+                  res.redirect('/lista-clienti');
+            }
+      });
+
+      app.post('/aggiornaCliente', urlencodeParser, async (req, res) =>  {
+            let objUtente = {
+                  nome : req.body.nome,
+                  cognome: req.body.cognome,
+                  piva: req.body.piva,
+                  note: req.body.note,
+                  email: req.body.emailHidden
+            }
+            try {
+                  const utente = await controller.updCliente(objUtente);
+                  console.log(utente);
+                  if(utente){
+                        req.flash('message', 'Utente aggiornato!');
+                        res.redirect('/lista-clienti');
+                  }else{
+                        req.flash('message', 'Utente non aggiornato!');
+                        res.redirect('/login');
+                  }
+            } catch (error) {
+                  
+            }
+	});
 }

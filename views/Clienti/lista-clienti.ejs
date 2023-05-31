@@ -37,7 +37,7 @@
             </div>
 
             <div class="table-responsive mb-4">
-                <table id="datatable-buttons" class="table table-centered datatable dt-responsive nowrap table-card-list" style="border-collapse: collapse; border-spacing: 0 12px; width: 100%;">
+                <table id="datatable-buttons" class="table table-centered datatable dt-responsive nowrap table-card-list tabClienti" style="border-collapse: collapse; border-spacing: 0 12px; width: 100%;">
                     <thead>
                         <tr class="bg-transparent">
                             <!--
@@ -82,7 +82,7 @@
                             </td>
                             <td><%= dato.cognome%></td>
                             <td><%= dato.piva%></td>
-                            <td><%= dato.email%></td>
+                            <td class="email"><%= dato.email%></td>
                             <td>
                                 <% if (dato.stato===true) { %>
                                 <div class="badge bg-pill bg-soft-success font-size-12">Active</div>
@@ -91,8 +91,8 @@
                                 <%}%>
                             </td>
                             <td>
-                                <a href="javascript:void(0);" class="px-3 text-primary"><i class="uil uil-pen font-size-18"></i></a>
-                                <a href="javascript:void(0);" class="px-3 text-danger"><i class="uil uil-trash-alt font-size-18"></i></a>
+                                <a href="#" class="px-3 text-primary linkAggiorna"><i class="uil uil-pen font-size-18"></i></a>
+                                <a href="#" class="px-3 text-danger linkCancella"><i class="uil uil-trash-alt font-size-18"></i></a>
                             </td>
                         </tr>
                         <%}%> 
@@ -105,6 +105,17 @@
 <!-- end row -->
 
 <%- contentFor('FooterJs') %>
+<script>
+$(document).ready(function() {
+    // Aggiungi un gestore di eventi al click sul link
+    $('.tabClienti').on('click', '.linkAggiorna', function() {
+      // Ottieni il valore dell'email corrispondente
+        var email = $(this).closest('tr').find('.email').text();
+      // Chiamata alla route "aggiorna-cliente" passando il valore di email
+        window.location.href = '/aggiorna-cliente?email=' + encodeURIComponent(email);
+    });
+  });
+</script>
 
 <!-- Required datatable js -->
 <script src="public/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>

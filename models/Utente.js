@@ -37,10 +37,14 @@ const utenteschema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    tipo: {
+      type: String,
+      default: ''
+    },
     stato: {
-      type: Boolean,
-      default: true
-    }
+        type: Boolean,
+        default: true
+      }
 })
 
 let Utente = mongoose.model('Utente', utenteschema, 'utenti')
