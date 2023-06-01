@@ -17,7 +17,7 @@
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Ecommerce</a></li>
+                    <li class="breadcrumb-item"><a href="\inserisci-cliente">Inserisci Cliente</a></li>
                     <li class="breadcrumb-item active">Clienti</li>
                 </ol>
             </div>
@@ -109,10 +109,20 @@
 $(document).ready(function() {
     // Aggiungi un gestore di eventi al click sul link
     $('.tabClienti').on('click', '.linkAggiorna', function() {
+        alert('ciao1');
       // Ottieni il valore dell'email corrispondente
         var email = $(this).closest('tr').find('.email').text();
       // Chiamata alla route "aggiorna-cliente" passando il valore di email
         window.location.href = '/aggiorna-cliente?email=' + encodeURIComponent(email);
+    });
+    $('.tabClienti').on('click', '.linkCancella', function() {
+      // Ottieni il valore dell'email corrispondente
+        var email = $(this).closest('tr').find('.email').text();
+      // Chiamata alla route "aggiorna-cliente" passando il valore di email
+        window.location.href = '/disabilita-cliente?email=' + encodeURIComponent(email);
+    });
+    $('.tabClienti').on('click', function() {
+      alert('ciao3');
     });
   });
 </script>

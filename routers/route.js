@@ -8,25 +8,25 @@ const multer = require('multer');
 
 // Configurazione Multer per gestire l'upload dei file
 const storage = multer.diskStorage({
-      destination: function (req, file, cb) {
-        cb(null, 'uploads');
-      },
-      filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
-      }
-    });
-    
-    var upload = multer({
-      storage: storage,
-      fileFilter: (req, file, cb) => {
-            if (file.mimetype == "image/png" || file.mimetype == "image/jpeg" || file.mimetype == "text/plain"  || file.mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
-                  cb(null, true);
-            } else {
-                  cb(null, false);
-                  return cb(new Error('Ammesse solo estensioni .png, jpg'));
-            }
-            }
-      }).single('file');
+	destination: function (req, file, cb) {
+	  cb(null, 'uploads');
+	},
+	filename: function (req, file, cb) {
+	  cb(null, Date.now() + '-' + file.originalname);
+	}
+  });
+  
+  var upload = multer({
+	storage: storage,
+	fileFilter: (req, file, cb) => {
+		  if (file.mimetype == "image/png" || file.mimetype == "image/jpeg" || file.mimetype == "text/plain"  || file.mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+				cb(null, true);
+		  } else {
+				cb(null, false);
+				return cb(new Error('Ammesse solo estensioni .png, jpg'));
+		  }
+		  }
+	}).single('file');
 
 module.exports = function (app) {
 
@@ -429,18 +429,6 @@ module.exports = function (app) {
                   res.redirect('/login');
             }
       });
-          
-      app.post('/upload', (req, res) => {
-      upload(req, res, function (err){
-            if (err instanceof multer.MulterError) {
-                  res.send(err)
-            } else if (err) {
-                  res.send(err)
-            }
-      })
-      
-      res.redirect('/lista-clienti');
-      });
 
       app.get('/aggiorna-cliente', isUserAllowed, urlencodeParser, async (req, res) => {
             const email = (req.query.email);
@@ -459,26 +447,77 @@ module.exports = function (app) {
             }
       });
 
-      app.post('/aggiornaCliente', urlencodeParser, async (req, res) =>  {
-            let objUtente = {
-                  nome : req.body.nome,
-                  cognome: req.body.cognome,
-                  piva: req.body.piva,
-                  note: req.body.note,
-                  email: req.body.emailHidden
-            }
+      app.get('/disabilita-cliente', isUserAllowed, urlencodeParser, async (req, res) => {
+            const email = (req.query.email);
             try {
-                  const utente = await controller.updCliente(objUtente);
-                  console.log(utente);
+                  const utente = await controller.getCliente(email);
                   if(utente){
-                        req.flash('message', 'Utente aggiornato!');
-                        res.redirect('/lista-clienti');
+                        res.locals = { title: 'Modifica Cliente' };
+                        res.render('Clienti/disabilita-cliente', { 'message': req.flash('message'), 'error': req.flash('error'), 'utente': utente });
                   }else{
-                        req.flash('message', 'Utente non aggiornato!');
+                        req.flash('message', 'Utente non trovato!');
                         res.redirect('/login');
                   }
             } catch (error) {
-                  
+                  req.flash('message', 'Utente non trovato!');
+                  res.redirect('/lista-clienti');
             }
+      });
+
+      app.post('/aggiornaCliente', urlencodeParser, async (req, res) =>  {
+            upload(req, res, async function (err){
+                  if (req.file !== undefined) {
+                        var fotoPath = req.file.path;
+                  } else {
+                        var fotoPath = "";
+                  } 
+                  let objUtente = {
+                        nome : req.body.nome,
+                        cognome: req.body.cognome,
+                        piva: req.body.piva,
+                        note: req.body.note,
+                        email: req.body.emailHidden,
+                        fotoPath: fotoPath,
+                  }
+                  try {
+                        const utente = await controller.updCliente(objUtente);
+                        if(utente){
+                              req.flash('message', 'Utente aggiornato!');
+                              res.redirect('/lista-clienti');
+                        }else{
+                              req.flash('message', 'Utente non aggiornato!');
+                              res.redirect('/login');
+                        }
+                  } catch (error) {
+                        
+                  }
+
+                  if (err instanceof multer.MulterError) {
+                        res.send(err)
+                  } else if (err) {
+                        res.send(err)
+                  }
+            })
+            
+	});
+
+      app.post('/disabilitaCliente', urlencodeParser, async (req, res) =>  {
+                  console.log(req.body);
+                  let objUtente = {
+                        email: req.body.emailHidden,
+                        stato: false
+                  }
+                  try {
+                        const utente = await controller.updCliente(objUtente);
+                        if(utente){
+                              req.flash('message', 'Utente aggiornato!');
+                              res.redirect('/lista-clienti');
+                        }else{
+                              req.flash('message', 'Utente non disabilitato!');
+                              res.redirect('/login');
+                        }
+                  } catch (error) {
+                        
+                  }
 	});
 }

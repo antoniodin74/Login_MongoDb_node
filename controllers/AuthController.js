@@ -135,7 +135,6 @@ module.exports = function (app) {
 
 
 	app.post('/post-register', urlencodeParser, function (req, res) {
-		console.log(req.body);
 			upload(req, res, function (err){
 				if (req.body.fieldHidden == "registraCliente") {
 					if (req.file !== undefined) {
@@ -204,7 +203,8 @@ module.exports = function (app) {
 		var utente = req.body.email
 		var password = req.body.password
 
-		Utente.findOne({$or:[{email:utente},{nome:utente}]})
+		//Utente.findOne({$or:[{email:utente},{nome:utente}]})
+		Utente.findOne({email:utente})
 		.then(utente => {
 			if(utente){
 				bcrypt.compare(password, utente.password, function(err, result) {

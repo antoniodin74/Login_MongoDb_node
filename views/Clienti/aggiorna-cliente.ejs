@@ -26,7 +26,7 @@
 <!-- end page title -->
 
 <%- contentFor('body') %>
-<form method="post" action="/aggiornaCliente">
+<form method="post" action="/aggiornaCliente" enctype="multipart/form-data">
 <div class="row">
     <div class="col-lg-12">
         <div id="addproduct-accordion" class="custom-accordion">
@@ -98,7 +98,40 @@
                     </div>
                 </div>
             </div>
-
+            <div class="card">
+                <a href="#addproduct-img-collapse" class="text-dark collapsed" data-bs-toggle="collapse" aria-haspopup="true" aria-expanded="false" aria-haspopup="true" aria-controls="addproduct-img-collapse">
+                    <div class="p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <div class="avatar-xs">
+                                    <div class="avatar-title rounded-circle bg-soft-primary text-primary">
+                                        02
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-1 overflow-hidden">
+                                <h5 class="font-size-16 mb-1">Immagine Utente</h5>
+                                <p class="text-muted text-truncate mb-0">Seleziona immagine</p>
+                            </div>
+                            <i class="mdi mdi-chevron-up accor-down-icon font-size-24"></i>
+                        </div>
+                        
+                    </div>
+                </a>
+            
+                <div id="addproduct-img-collapse" class="collapse" data-bs-parent="#addproduct-accordion">
+                    <div class="col-md-6">
+                        <img class="rounded mr-2" alt="400x400" width="400" src="<%= utente.fotoPath%>" data-holder-rendered="true">
+                    </div>
+                </div>
+                <div id="addproduct-img-collapse" class="collapse" data-bs-parent="#addproduct-accordion">
+                    <div class="p-4 border-top">
+                        <div class="fallback">
+                            <input name="file" id="file" type="file">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
